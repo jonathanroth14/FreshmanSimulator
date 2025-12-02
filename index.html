@@ -565,59 +565,6 @@ const DIFF = { gpaDrag: 1, sleepHit: 1, eventPos: 1, eventNeg: 1, midtermMul: 1 
 
 function savePlayer(){ localStorage.setItem('sim_player', JSON.stringify(PLAYER)); }
 
-// ===== Onboarding modal logic =====
-(function setupOnboard(){
-  const modal = document.getElementById('onboard');
-  const nameI = document.getElementById('obName');
-  const goals = document.getElementById('obGoals');
-  const btnStart = document.getElementById('obStart');
-  const btnSkip  = document.getElementById('obSkip');
-
-  if(!modal || !nameI || !goals || !btnStart || !btnSkip) return; // if HTML removed, do nothing
-
-  // Pre-fill from saved profile if present
-  if(PLAYER.name) nameI.value = PLAYER.name;
-  // Set active goal chip to saved goal
-  goals.querySelectorAll('button.tag').forEach(b=>{
-    b.classList.toggle('active', b.dataset.goal === PLAYER.goal);
-  });
-
-  // Goal chip toggles
-  goals.addEventListener('click', (e)=>{
-    const b = e.target.closest('button.tag'); if(!b) return;
-    goals.querySelectorAll('button.tag').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-  });
-
-  // Start -> save & close
-  btnStart.onclick = ()=>{
-    const active = goals.querySelector('button.tag.active');
-    const goal = active ? active.dataset.goal : 'Balance & wellness';
-    const name = (nameI.value || '').trim();
-    PLAYER = { name, goal };
-    savePlayer();
-    hide('#onboard');
-    // small nudge toast if you have toast()
-    if(typeof toast==='function'){ toast(`Hi ${name || 'there'}! Goal set: ${goal}`,'good'); }
-  };
-
-  // Skip -> default values & close
-  btnSkip.onclick = ()=>{
-    if(!PLAYER.name) PLAYER.name = ''; // default blank name
-    if(!PLAYER.goal) PLAYER.goal = 'Balance & wellness';
-    savePlayer();
-    hide('#onboard');
-  };
-
-  // Auto-open if no name saved yet
-  if(!PLAYER.name){
-    show('#onboard');
-  } else {
-    hide('#onboard');
-  }
-})();
-
-
     // ===== DATA =====
     const YEARS = ['Freshman','Sophomore','Junior','Senior'];
     const SUBJECTS = ['English','Math','Science','Social Studies','PE/Health'];
@@ -868,11 +815,6 @@ function initOnboard(){
     show('#onboard');
   }
 }
-
-// Call once after your helpers exist:
-initOnboard();
-
-
 
 function toast(msg,type=''){
   const root=document.getElementById('toasts');
@@ -1364,6 +1306,7 @@ function toast(msg,type=''){
 
     // init
     refreshHeader(); setSteps(0); setStepTip(0);
+    initOnboard();
 
 function updateActionBar(mode){
   // mode can be: intro, cores, electives, clubs, review, report, grad
