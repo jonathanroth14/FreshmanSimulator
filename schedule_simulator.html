@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Toucann — HS Journey (Step-by-Step • Health • Core-by-Core)</title>
+  <!-- Tailwind (to mirror SAT page utilities) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      /* Colors aligned to SAT page */
+      --bg:#f3f4f6; --panel:#ffffff; --border:#e5e7eb; --text:#0f172a; --muted:#64748b;
+      --brand:#1ea1eb; --brand2:#2563eb; --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+      --glow:#60a5fa; --shadow:0 8px 20px rgba(0,0,0,0.08);
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100%}
+    body{
+      margin:0;color:var(--text);font:16px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background:var(--bg); position:relative;
+    }
+    .app{max-width:1100px;margin:0 auto;padding:16px;position:relative;z-index:1}
+
+    /* Header */
+    .pill{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .6rem;font-size:.85rem;font-weight:700;border-radius:999px;background:linear-gradient(135deg,#ffe47a,#ff9a9e);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+
+    /* Stepper */
+    .stepper{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+    .step{height:10px;border-radius:999px;background:#e5e7eb;border:1px solid var(--border);overflow:hidden}
+    .step>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand2));box-shadow:0 0 12px var(--glow)}
+
+    /* Cards */
+    .card{background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:14px;backdrop-filter:blur(8px)}
+    /* lightweight inner boxes used inside cards */
+.tile{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px;
+}
+
+/* slightly tighter cards on mobile (override) */
+@media (max-width:640px){
+  .card{ 
+    padding:10px;               /* was 14px */
+    box-shadow:0 6px 14px rgba(0,0,0,.06); /* softer shadow */
+  }
+  .tile{ padding:8px; }
+  .section-title{ font-size:0.95rem; margin-bottom:4px; }
+  .row{ gap:8px; }
+}
+
+    
+    .section-title{font-weight:800;letter-spacing:.2px;margin:0 0 6px}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+    /* Buttons — SAT CTA */
+    .btn{appearance:none;border:none;background:#1ea1eb;color:#fff;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:700;letter-spacing:.2px;box-shadow:0 8px 20px rgba(30,161,235,.3);transition:filter .12s ease, transform .06s ease}
+    .btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+    .btn:disabled{opacity:.6;cursor:not-allowed;filter:none;transform:none}
+    .btn.primary{background:#1ea1eb}
+    .btn.good{background:#16a34a}
+    .btn.warn{background:#f59e0b}
+    .btn.ghost{background:transparent;color:#1e293b;border:1px solid var(--border)}
+
+    .select,.input{width:100%;padding:10px;border-radius:10px;background:#fff;border:1px solid var(--border);color:var(--text)}
+    .list{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{padding:8px 10px;border:1px solid var(--border);border-radius:12px;background:#fff;color:#334155;cursor:pointer}
+    .tag.active{background:#e0f2fe;border-color:#93c5fd;color:#0f172a}
+    .grid{display:grid;gap:12px}
+    .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:1000px){.g2,.g3{grid-template-columns:1fr}}
+    @media (max-width:640px){
+      .story .tile{min-width:180px}
+      .section-title{font-size:1rem}
+      .card{padding:12px}
+      .btn{width:100%}
+    }
+
+    .hidden{display:none !important}
+    .badge{background:linear-gradient(135deg,#ffe47a 0%, #ff9a9e 100%);color:#fff;border:none;padding:.4rem .8rem;font-size:.9rem;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+    .lock{font-size:12px;color:#f59e0b;margin-top:6px}
+
+    /* Onboarding overlay */
+.ob{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,.55);backdrop-filter:blur(4px);z-index:70}
+.ob-card{max-width:520px;width:92%;padding:16px}
+.ob .tag.active{background:#e0f2fe;border-color:#93c5fd;color:#0f172a}
+
+
+    /* Toast */
+    .toast{background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:10px 12px;min-width:220px}
+    .toast.good{border-color:#86efac}
+    .toast.warn{border-color:#fca5a5}
+
+    /* Welcome (Step 1) spacing polish */
+#step1.card{
+  padding:16px 16px 14px;         /* a touch tighter */
+}
+#step1 .section-title{
+  margin:0 0 6px;                 /* less gap under title */
+}
+#step1 p{
+  margin:6px 0 12px;              /* balanced top/bottom space */
+  line-height:1.45;
+  color:var(--muted);
+}
+
+/* CTA row centered and not jammed against the text */
+#step1 .cta-row{
+  display:flex;
+  justify-content:center;
+  margin-top:6px;
+}
+
+/* Full-width button on narrow screens */
+@media (max-width:640px){
+  #step1.card{ padding:12px; }    
+  #step1 .section-title{ font-size:1rem; }
+  #step1 p{ margin:6px 0 10px; font-size:0.97rem; }
+  #step1 .btn.primary{ width:100%; }
+}
+
+/* --- Welcome card (Step 1) — darker panel + stronger text + tighter spacing --- */
+:root{
+  --panel-welcome:#e9eef6;       /* darker than white */
+  --panel-welcome-2:#e4ebf5;     /* subtle gradient end */
+  --border-welcome:#c9d4e4;      /* darker border */
+  --text-strong:#0b132b;         /* darker body text */
+  --muted-strong:#334155;        /* darker muted */
+}
+
+#step1.card{
+  background:linear-gradient(180deg,var(--panel-welcome),var(--panel-welcome-2));
+  border-color:var(--border-welcome);
+  padding:14px 14px 12px;        /* tighter */
+}
+
+/* Welcome (Step 1) — darker text + tighter spacing */
+#step1 .section-title{
+  color:#0b132b;              /* strong heading */
+  margin:0 0 6px;
+  font-size:1.05rem;
+  letter-spacing:.1px;
+}
+
+#step1 p{
+  color:#0b132b;              /* darker body (override muted) */
+  margin:6px 0 10px;          /* tighter rhythm */
+  line-height:1.42;
+}
+
+/* If the body uses .muted, make that darker too */
+#step1 .muted{ color:#334155; }
+
+/* Center the CTA and keep it close to the copy */
+#step1 .cta-row{
+  display:flex;
+  justify-content:center;
+  margin-top:6px;
+}
+
+#step1 .btn.primary{
+  min-height:40px;
+  padding:10px 14px;
+}
+
+/* Phone tweaks */
+@media (max-width:640px){
+  #step1 .section-title{ font-size:1rem; }
+  #step1 p{ margin:6px 0 8px; }
+  #step1 .btn.primary{ width:100%; }
+}
+
+
+
+    /* Card Shimmer */
+    .card:hover{box-shadow:0 10px 24px rgba(0,0,0,.10); transform:translateY(-1px); transition:.15s ease}
+
+    /* Meter */
+    .meter{height:10px;background:#f1f5f9;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+    .meter>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444)}
+    .tiny{font-size:12px}
+
+    /* Subject chips w/emoji */
+    .subject{display:flex;align-items:center;gap:8px}
+    .subject .ico{font-size:18px}
+
+    /* Storyboard strip */
+    .story{display:flex;gap:10px;overflow:auto;padding:6px 2px;margin-bottom:12px}
+    .story .tile{min-width:220px;background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:12px;padding:10px}
+    .story .tcap{font-weight:700}
+
+    /* Loader overlay */
+    #loader{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(3,8,23,.35);backdrop-filter:blur(4px);z-index:50}
+    #loader .panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;min-width:280px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:var(--shadow)}
+    .spinner{width:36px;height:36px;border-radius:50%;border:3px solid rgba(2,6,23,.15);border-top-color:#1ea1eb;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .dots:after{content:'·'; animation:ellipsis 1.2s infinite steps(4,end)}
+    @keyframes ellipsis{0%{content:'·'}25%{content:'··'}50%{content:'···'}75%{content:'····'}100%{content:'·'}}
+
+    /* Motion */
+    .fadeUp{animation:fadeUp .28s ease both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+    .gradient-title{font-weight:800;font-size:2rem;background:linear-gradient(90deg,#1ea1eb,#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
+    @media (min-width:768px){.gradient-title{font-size:2.5rem}}
+  .gradient-title{font-weight:800;font-size:2rem;background:linear-gradient(90deg,#1ea1eb,#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
+    @media (min-width:768px){.gradient-title{font-size:2.5rem}}
+
+    /* Status banner + semester progress */
+    /* Semester progress dots */
+.sem-progress{ display:flex; gap:6px }
+.sem-dot{
+  width:12px; height:12px; border-radius:999px;
+  border:1px solid var(--border);
+  transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+
+/* Past semesters (done) */
+.sem-dot.done{
+  background:#22c55e;           /* green */
+  border-color:#16a34a;
+  opacity:1;
+}
+
+/* Current semester (active) */
+.sem-dot.active{
+  background:linear-gradient(135deg,#1ea1eb,#7c3aed);
+  box-shadow:0 0 0 2px rgba(30,161,235,.15);
+  border-color:transparent;
+  opacity:1;
+  transform:scale(1.04);
+}
+
+/* Future semesters (explicit greyed-out) */
+.sem-dot.future{
+  background:#a0a0a0;           /* grey fill */
+  border-color:#4b4b4b;
+  opacity:.6;
+}
+
+    .status-pulse{animation:statusPulse 1.2s ease-in-out 2}
+    @keyframes statusPulse{0%{transform:scale(1)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
+
+@media (max-width:640px){
+  header.text-center.mb-6.mt-6{ margin-top:10px !important; margin-bottom:12px !important; }
+  header img.mx-auto{ max-width:170px !important; margin-bottom:6px !important; }
+  .gradient-title{ font-size:1.6rem; }
+}
+
+@media (max-width:640px){
+  .g3{ grid-template-columns:1fr; }
+  .g2{ grid-template-columns:1fr; }
+}
+/* Event modal (compact + centered) */
+#eventPanel { padding:14px; }
+#eventPanel .section-title { font-size:1.05rem; }
+
+/* Choice buttons: compact, equal width */
+.ev-choice-grid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(120px,1fr));
+  gap:10px;
+  align-items:center;
+  justify-items:stretch;
+}
+.evbtn{
+  appearance:none;
+  border:none;
+  border-radius:10px;
+  padding:10px 12px;
+  font-weight:700;
+  text-align:center;
+  box-shadow:0 6px 14px rgba(0,0,0,.08);
+  background:#1ea1eb;
+  color:#fff;
+  transition:filter .12s ease, transform .06s ease;
+}
+.evbtn.secondary{ background:#0ea5e9; }
+.evbtn:hover{ filter:brightness(1.06); transform:translateY(-1px); }
+
+@media (max-width:420px){
+  .ev-choice-grid{ grid-template-columns:1fr; gap:8px; }
+  .evbtn{ padding:10px 10px; font-size:.98rem; }
+}
+
+@media (max-width:360px){
+  #eventPanel{ max-width:94vw; padding:12px; }
+}
+
+#midtermLabel{ margin-top:4px !important; }
+#midtermExplain{ margin-top:2px !important; }
+
+/* Welcome card: subtle light gradient + crisp border (overrides any earlier bg) */
+#step1.card{
+  background: #ffffff !important;
+  background-image: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%) !important;
+  border-color: #dbe7f7 !important;         /* slightly bluer than default */
+  box-shadow: 0 10px 22px rgba(16,24,40,.06); /* gentle lift */
+}
+
+
+
+    /* Confetti */
+    .confetti{position:fixed;inset:0;pointer-events:none;z-index:70}
+    .confetti i{position:absolute;width:8px;height:14px;opacity:.9;border-radius:2px;animation:fall 1.8s linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:0}}
+    
+    /* Advisor Text */
+    #report [data-advisor]{ margin:.25rem 0 .5rem; font-style:italic }
+
+    .blurry-blobs{
+  position:fixed; inset:0; overflow:hidden;
+  z-index:0; pointer-events:none;
+}
+
+.blurry-blobs .blob-a,
+.blurry-blobs .blob-b,
+.blurry-blobs .blob-c{
+  position:absolute; width:120vmax; height:120vmax; border-radius:50%;
+  will-change: transform, filter;
+}
+
+/* Placement roughly matches your current layout */
+.blurry-blobs .blob-a{ top:-35%; left:-25%; }
+.blurry-blobs .blob-b{ bottom:-40%; right:-30%; }
+.blurry-blobs .blob-c{ top:30%; left:20%; }
+
+/* Darker palettes + more presence */
+.blurry-blobs .blob-a{
+  background: radial-gradient(circle at 35% 40%, #6ac7e1 0%, #3b82f6 55%);
+  opacity:.68; filter: blur(180px);
+}
+.blurry-blobs .blob-b{
+  background: radial-gradient(circle at 60% 50%, #7c3aed 0%, #60a5fa 55%);
+  opacity:.62; filter: blur(200px);
+}
+.blurry-blobs .blob-c{
+  background: radial-gradient(circle at 45% 55%, #fde68a 0%, #34d399 50%);
+  opacity:.58; filter: blur(190px);
+}
+
+/* Mobile tune: slightly less blur for crispness and GPU load */
+@media (max-width:640px){
+  .blurry-blobs .blob-a{ filter: blur(150px); opacity:.62; }
+  .blurry-blobs .blob-b{ filter: blur(170px); opacity:.58; }
+  .blurry-blobs .blob-c{ filter: blur(160px); opacity:.55; }
+}
+
+
+  </style>
+</head>
+<body>
+  <!-- Blurry blobs background to match SAT theme -->
+  <div class="blurry-blobs">
+  <div class="blob-a"></div>
+  <div class="blob-b"></div>
+  <div class="blob-c"></div>
+</div>
+
+
+  <div class="app">
+    <!-- SAT-style Header -->
+    <header class="text-center mb-6 mt-6">
+      <img src="/static/images/Logo_Black.png" alt="Toucann Logo" class="mx-auto max-w-[220px] h-auto mb-3" />
+      <div class="mt-2 flex items-center justify-center gap-2">
+</div>
+
+      <h1 class="gradient-title">High School Journey</h1>
+      <p class="text-gray-600">Build a balanced path to college: GPA • Resume • Health</p>
+      <div class="mt-2"><span class="pill" id="yearPill">Freshman • Fall</span></div>
+    </header>
+
+    <!-- Onboarding Modal -->
+<div id="onboard" class="hidden" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,.55);backdrop-filter:blur(4px);z-index:80">
+  <div class="card" style="max-width:640px;width:92%">
+    <h3 class="section-title">Welcome! Let’s set you up 🎯</h3>
+    <p class="muted" style="margin-top:-4px">Tell us who you are and what you’re aiming for so we can tailor tips.</p>
+
+    <div style="margin-top:10px">
+      <label class="muted" for="obName">Your first name</label>
+      <input id="obName" class="select" placeholder="e.g., Alex" autocomplete="off"/>
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="muted" style="margin-bottom:6px">Main goal</div>
+      <div id="goalChips" class="list">
+        <button class="tag" data-goal="Balance & wellness">Balance & wellness</button>
+        <button class="tag" data-goal="GPA & Scholarships">GPA & Scholarships</button>
+        <button class="tag" data-goal="STEM Depth">STEM Depth</button>
+        <button class="tag" data-goal="Arts & Portfolio">Arts & Portfolio</button>
+        <button class="tag" data-goal="Leadership & Impact">Leadership & Impact</button>
+      </div>
+    </div>
+
+    <div class="row" style="justify-content:space-between;margin-top:14px">
+      <button id="obReset" class="btn ghost">Use guest profile</button>
+      <button id="obStart" class="btn primary">Start ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reopen profile quickly -->
+<div class="text-center" style="margin-top:6px">
+  <button id="openProfile" class="btn ghost" style="padding:6px 10px;font-weight:600">Change profile</button>
+</div>
+
+
+
+    <!-- Dynamic Status Banner (replaces static storyboard) -->
+    <div id="statusBox" class="card mb-3" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div class="status-title" id="statusTitle" style="font-weight:800;font-size:18px">Freshman • Fall</div>
+        <div class="muted tiny" id="statusTip">Pick cores, then add flavor with electives & clubs.</div>
+      </div>
+      <div class="sem-progress" id="semProgress" aria-label="8-semester progress"></div>
+    </div>
+
+    <div class="stepper">
+      <div class="step"><i id="st1"></i></div>
+      <div class="step"><i id="st2"></i></div>
+      <div class="step"><i id="st3"></i></div>
+      <div class="step"><i id="st4"></i></div>
+      <div class="step"><i id="st5"></i></div>
+    </div>
+
+    <!-- STEP 1: Intro -->
+    <div class="card fadeUp" id="step1">
+      <h3 class="section-title">Welcome! You’re a new freshman 🎒</h3>
+      <p class="muted">We’ll go box‑by‑box: pick core classes (per subject & level), choose electives & clubs, simulate the semester with surprise events, then get a report with badges and advice. Keep tweaking until graduation.</p>
+      <div class="cta-row" style="justify-content:flex-end"><button class="btn primary" id="toStep2">Start Class Selection</button></div>
+    </div>
+
+    <!-- STEP 2: Core by Core -->
+    <div class="card hidden fadeUp" id="step2">
+      <h3 class="section-title">Pick your core classes (subject + level)</h3>
+      <div class="muted" style="margin-bottom:6px">Levels change weekly time + GPA potential: Regular ≈3h, Honors ≈4h, AP/TAG ≈5h per week per subject. <span id="coreLockMsg" class="lock hidden">Spring semester: core classes are locked — adjust electives/clubs only.</span></div>
+      <div class="grid g2" id="coreGrid"></div>
+      <div class="row" style="justify-content:space-between;margin-top:10px">
+        <button class="btn ghost" id="back1">Back</button>
+        <button class="btn primary" id="toStep3">Next: Electives</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Electives -->
+    <div class="card hidden fadeUp" id="step3">
+      <h3 class="section-title">Choose electives</h3>
+      <div class="muted" style="margin-bottom:6px">Pick 0–3. Each adds weekly hours, resume points, and a little fun.</div>
+      <div class="list" id="electivesList"></div>
+      <div class="row" style="justify-content:space-between;margin-top:10px">
+        <button class="btn ghost" id="back2">Back</button>
+        <button class="btn primary" id="toStep4">Next: Clubs & Sports</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Clubs/Sports -->
+    <div class="card hidden fadeUp" id="step4">
+      <h3 class="section-title">Join clubs & sports</h3>
+      <div class="muted" style="margin-bottom:6px">Clubs boost resume & social health; sports require more hours but can unlock leadership.</div>
+      <div class="list" id="clubsList"></div>
+      <div class="row" style="justify-content:space-between;margin-top:10px">
+        <button class="btn ghost" id="back3">Back</button>
+        <button class="btn primary" id="toStep5">Review & Simulate</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: Review & Sim -->
+    <div class="card hidden fadeUp" id="step5">
+      <h3 class="section-title">Review</h3>
+      <div class="grid g3">
+        <div class="tile"><div class="section-title">📆 Weekly Load</div><div id="loadSummary" class="muted">—</div></div>
+        <div class="tile"><div class="section-title">🎯 Projected Outcome</div><div id="projSummary" class="muted">—</div></div>
+        <div class="tile"><div class="section-title">💙 Health Snapshot</div><div id="healthSummary" class="muted">—</div></div>
+        <div class="card">
+          <div class="section-title">🧪 Midterm Risk</div>
+          <div class="meter"><i id="midtermBar"></i></div>
+          <div class="muted" id="midtermLabel" style="margin-top:6px">—</div>
+          <div class="muted tiny" id="midtermExplain" style="margin-top:4px">—</div>
+        </div>
+      </div>
+      <div class="row" style="justify-content:space-between;margin-top:10px">
+        <button class="btn ghost" id="back4">Back</button>
+        <button class="btn primary" id="simulateBtn">Simulate Semester ▶</button>
+      </div>
+    </div>
+
+    <!-- REPORT -->
+    <div class="card hidden fadeUp" id="report">
+      <h3 class="section-title" id="repTitle">Semester Report</h3>
+      <div class="grid g3">
+        <div class="tile"><div class="section-title">📘 GPA</div><div style="font-size:34px;font-weight:800" id="rGpa">—</div><div class="muted" id="gpaNote"></div></div>
+        <div class="tile"><div class="section-title">⭐ Resume</div><div style="font-size:34px;font-weight:800" id="rResume">—</div><div class="muted" id="resumeNote"></div></div>
+        <div class="tile"><div class="section-title">😴 Sleep Score</div><div style="font-size:34px;font-weight:800" id="rSleep">—</div><div class="muted" id="sleepNote"></div></div>
+        <div class="tile"><div class="section-title">🧠 Mental Health</div><div style="font-size:34px;font-weight:800" id="rMental">—</div><div class="muted" id="mentalNote"></div></div>
+        <div class="tile"><div class="section-title">🤝 Social Health</div><div style="font-size:34px;font-weight:800" id="rSocial">—</div><div class="muted" id="socialNote"></div></div>
+        <div class="tile"><div class="section-title">🔥 Burnout Risk</div><div style="font-size:34px;font-weight:800" id="rBurn">—</div></div>
+      </div>
+      <div class="card" style="margin-top:10px">
+        <div class="section-title">📜 This semester’s events</div>
+        <ul id="eventsLog" class="muted" style="margin:6px 0 0 18px"></ul>
+      </div>
+      <div class="card" style="margin-top:10px">
+        <div class="section-title">🏅 Badges earned</div>
+        <div id="badges" class="list"></div>
+      </div>
+      <div class="card" style="margin-top:10px">
+        <div class="section-title">💡 Suggestions</div>
+        <ul id="tips" class="muted" style="margin:6px 0 0 18px"></ul>
+      </div>
+      <div class="row" style="justify-content:flex-end;margin-top:10px">
+        <button class="btn warn" id="tweakBtn">Tweak selections</button>
+        <button class="btn good" id="nextSemBtn">Next semester ▶</button>
+      </div>
+    </div>
+
+    <!-- GRAD SUMMARY -->
+    <div class="card hidden fadeUp" id="grad">
+      <h3 class="section-title">🎓 You graduated!</h3>
+      <p class="muted" id="gradSummary">—</p>
+      <div class="section-title">Final badges</div>
+      <div id="finalBadges" class="list" style="margin-top:6px"></div>
+      <div class="row" style="justify-content:flex-end;margin-top:10px">
+        <button class="btn" id="restartBtn">Play again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Modal -->
+  <div id="eventModal" class="hidden" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,.55);backdrop-filter:blur(4px);z-index:60">
+    <div class="card" style="max-width:520px;width:92%" id="eventPanel">
+  <h3 id="evTitle" class="section-title text-center" style="margin-bottom:6px">Event</h3>
+  <p id="evBody" class="muted text-center" style="margin:0 4px 10px">…</p>
+
+  <!-- choices render here -->
+  <div id="evChoices" class="ev-choice-grid"></div>
+
+  <p class="tiny muted text-center" style="margin-top:10px">Choose wisely — time is finite.</p>
+</div>
+
+
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div id="loader">
+    <div class="panel">
+      <div class="spinner"></div>
+      <div>Simulating your semester<span class="dots"></span></div>
+      <div class="tiny muted">Rolling events, crunching sleep, checking midterm risk…</div>
+    </div>
+  </div>
+  <div class="confetti" id="confetti"></div>
+
+  <script>
+
+// ===== Player profile (load/save) =====
+let PLAYER = JSON.parse(localStorage.getItem('sim_player')||'null') || { name:'', goal:'Balance & wellness' };
+
+// If you don't already have DIFF/DIFFICULTY, neutralize them so other code won't crash:
+const DIFFICULTY = 'Default';
+const DIFF = { gpaDrag: 1, sleepHit: 1, eventPos: 1, eventNeg: 1, midtermMul: 1 };
+
+function savePlayer(){ localStorage.setItem('sim_player', JSON.stringify(PLAYER)); }
+
+// ===== Onboarding modal logic =====
+(function setupOnboard(){
+  const modal = document.getElementById('onboard');
+  const nameI = document.getElementById('obName');
+  const goals = document.getElementById('obGoals');
+  const btnStart = document.getElementById('obStart');
+  const btnSkip  = document.getElementById('obSkip');
+
+  if(!modal || !nameI || !goals || !btnStart || !btnSkip) return; // if HTML removed, do nothing
+
+  // Pre-fill from saved profile if present
+  if(PLAYER.name) nameI.value = PLAYER.name;
+  // Set active goal chip to saved goal
+  goals.querySelectorAll('button.tag').forEach(b=>{
+    b.classList.toggle('active', b.dataset.goal === PLAYER.goal);
+  });
+
+  // Goal chip toggles
+  goals.addEventListener('click', (e)=>{
+    const b = e.target.closest('button.tag'); if(!b) return;
+    goals.querySelectorAll('button.tag').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+  });
+
+  // Start -> save & close
+  btnStart.onclick = ()=>{
+    const active = goals.querySelector('button.tag.active');
+    const goal = active ? active.dataset.goal : 'Balance & wellness';
+    const name = (nameI.value || '').trim();
+    PLAYER = { name, goal };
+    savePlayer();
+    hide('#onboard');
+    // small nudge toast if you have toast()
+    if(typeof toast==='function'){ toast(`Hi ${name || 'there'}! Goal set: ${goal}`,'good'); }
+  };
+
+  // Skip -> default values & close
+  btnSkip.onclick = ()=>{
+    if(!PLAYER.name) PLAYER.name = ''; // default blank name
+    if(!PLAYER.goal) PLAYER.goal = 'Balance & wellness';
+    savePlayer();
+    hide('#onboard');
+  };
+
+  // Auto-open if no name saved yet
+  if(!PLAYER.name){
+    show('#onboard');
+  } else {
+    hide('#onboard');
+  }
+})();
+
+
+    // ===== DATA =====
+    const YEARS = ['Freshman','Sophomore','Junior','Senior'];
+    const SUBJECTS = ['English','Math','Science','Social Studies','PE/Health'];
+    const SUBJECT_ICONS = { 'English':'📖', 'Math':'🧮', 'Science':'🔬', 'Social Studies':'🌎', 'PE/Health':'🏃‍♀️' };
+    const LEVELS = [
+      {id:'regular', name:'Regular', hours:3, gpaDelta:0},
+      {id:'honors', name:'Honors', hours:4, gpaDelta:+0.10},
+      {id:'ap', name:'AP/TAG', hours:5, gpaDelta:+0.25}
+    ];
+
+
+    // init difficulty buttons
+(function(){
+  const wrap = document.getElementById('diffSwitch');
+  if(!wrap) return;
+  // set active based on stored value
+  const current = localStorage.getItem('sim_difficulty') || 'Challenging';
+  wrap.querySelectorAll('.tag').forEach(b=>{
+    b.classList.toggle('active', b.dataset.diff===current);
+    b.onclick = ()=>{
+      wrap.querySelectorAll('.tag').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      localStorage.setItem('sim_difficulty', b.dataset.diff);
+      location.reload(); // simplest: re-evaluate DIFF + model
+    };
+  });
+})();
+
+
+
+    const ELECTIVES = [
+        {id:'art',          name:'Art / Design 🎨',           hours:2, resume:3},
+        {id:'music',        name:'Band / Choir 🎵',           hours:3, resume:4},
+        {id:'cs',           name:'Computer Science 💻',       hours:3, resume:5},
+        {id:'debate',       name:'Debate 🗣️',                hours:3, resume:5},
+        {id:'language',     name:'Foreign Language 🌐',       hours:3, resume:5},
+        {id:'engineering',  name:'Engineering / Robotics 🤖', hours:3, resume:6},
+        {id:'theater',      name:'Theater 🎭',                hours:3, resume:4},
+        {id:'journalism',   name:'Journalism / Newspaper 📰', hours:3, resume:5},
+        {id:'yearbook',     name:'Yearbook 📸',               hours:2, resume:4},
+        {id:'creative',     name:'Creative Writing ✍️',       hours:2, resume:4},
+        {id:'business',     name:'Business / Entrepreneurship 💼', hours:3, resume:5},
+        {id:'culinary',     name:'Culinary 🍳',               hours:2, resume:3},
+        {id:'photography',  name:'Photography 📷',            hours:2, resume:3}
+    ];
+
+
+    const CLUBS = [
+        {id:'sports',       name:'Sport (JV/Varsity) 🏈',     hours:6, resume:6, social:+6},
+        {id:'robotics',     name:'Robotics Team 🤖',          hours:4, resume:7, social:+2},
+        {id:'volunteer',    name:'Volunteering 🤝',          hours:3, resume:6, social:+3, mental:+2},
+        {id:'job',          name:'Part-Time Job 💼',          hours:6, resume:5, social:+1, gpaPenalty:0.06},
+        {id:'studentgov',   name:'Student Government 🏛️',    hours:3, resume:7, social:+5},
+        {id:'mclub',        name:'Math Club ➕',              hours:2, resume:5, social:+2},
+        {id:'chess',        name:'Chess Club ♟️',             hours:2, resume:5, social:+2},
+        {id:'mUN',          name:'Model UN 🌍',              hours:3, resume:6, social:+4},
+        {id:'env',          name:'Environmental Club 🌿',     hours:3, resume:5, social:+3, mental:+1},
+        {id:'esports',      name:'Esports 🎮',                hours:3, resume:4, social:+4, sleep:-1},
+        {id:'dance',        name:'Dance Team 💃',             hours:4, resume:6, social:+4},
+        {id:'scioly',       name:'Science Olympiad 🧪',       hours:3, resume:6, social:+2},
+        {id:'culture',      name:'Cultural Assoc. 🌈',        hours:2, resume:4, social:+5}
+    ];
+
+
+    const RANDOM_EVENTS = [
+      { kind:'choice', title:'Science Fair Invite', body:'Your science teacher invites you to join the district science fair team.',
+        choices:[
+          {label:'Join the team', resume:+8, hours:+3, gpa:-0.05, mental:+2, log:'+ Joined science fair (time -3h, resume +8).'},
+          {label:'Decline for balance', gpa:+0.02, sleep:+2, log:'+ Declined, protected GPA (+0.02).'}
+        ]},
+      { kind:'choice', title:'Study Group', body:'Friends start a weekly study group for math. Do you join?',
+        choices:[
+          {label:'Join weekly', resume:+1, hours:+2, gpa:+0.08, sleep:-1, social:+2, log:'+ Joined study group (time -2h, GPA +0.08).'},
+          {label:'Skip', log:'+ Skipped study group.'}
+        ]},
+      { kind:'choice', title:'Community Hackathon', body:'Weekend hackathon invites beginner coders.',
+        choices:[
+          {label:'Compete', resume:+10, hours:+4, gpa:-0.06, sleep:-4, social:+1, log:'+ Entered hackathon (time -4h, resume +10).'},
+          {label:'Volunteer briefly', resume:+4, hours:+1, gpa:-0.01, sleep:-1, log:'+ Volunteered (time -1h, resume +4).'},
+          {label:'Pass', gpa:+0.01, sleep:+1, log:'+ Passed for rest (+0.01 GPA).'}
+        ]},
+      { kind:'choice', title:'Leadership Shot', body:'A club asks you to be a representative.',
+        choices:[
+          {label:'Accept role', resume:+8, hours:+2, gpa:-0.03, social:+2, log:'+ Took leadership (time -2h, resume +8).'},
+          {label:'Decline', gpa:+0.01, log:'+ Declined leadership, light load (+0.01).'}
+        ]},
+      // Relationship & personal
+      { kind:'choice', title:'Breakup 💔', body:'You went through a breakup during the semester.',
+        choices:[
+          {label:'Take time to heal', mental:-8, gpa:-0.08, log:'- Breakup stress hurt GPA (-0.08) and mental health (-8).'},
+          {label:'Lean on friends', social:+5, mental:-4, gpa:-0.04, log:'+ Leaned on friends: social +5, GPA -0.04.'}
+        ]},
+      { kind:'choice', title:'New Friendship', body:'You became close with a new friend group.',
+        choices:[
+          {label:'Spend time with them', social:+8, mental:+4, sleep:-3, log:'+ Built new friendships: social +8, mental +4, less sleep.'},
+          {label:'Stay focused on academics', gpa:+0.05, mental:-2, log:'+ Focused on studies: GPA +0.05, mental -2.'}
+        ]},
+      { kind:'choice', title:'Extra Credit Project', body:'Your teacher offers an optional extra credit project.',
+        choices:[
+          {label:'Do the project', gpa:+0.12, hours:+2, sleep:-2, log:'+ Extra credit done: GPA +0.12, extra hours.'},
+          {label:'Skip it', log:'+ Skipped extra credit, no change.'}
+        ]},
+      // Sports events
+      { kind:'choice', title:'Big Game', body:'Your team made it to the championship!',
+        choices:[
+          {label:'Play hard', resume:+10, social:+5, sleep:-4, gpa:-0.05, log:'+ Played in championship: resume +10, social +5, GPA -0.05.'},
+          {label:'Stay rested', sleep:+4, gpa:+0.05, log:'+ Skipped big game prep: GPA +0.05, sleep recovered.'}
+        ]},
+      { kind:'forced', title:'Sports Injury', body:'You got injured during practice.', gpa:-0.05, resume:-2, mental:-5, sleep:+2, log:'- Sports injury: GPA -0.05, resume -2, mental -5.' },
+      // Clubs & ECs events
+      { kind:'choice', title:'Robotics Competition', body:'Your robotics team enters a regional contest.',
+        choices:[
+          {label:'Pull all-nighter to prep', resume:+12, gpa:-0.08, sleep:-6, mental:-3, log:'+ Pulled all-nighter for robotics: resume +12, GPA -0.08.'},
+          {label:'Balanced prep', resume:+6, gpa:-0.02, sleep:-2, log:'+ Balanced robotics prep: resume +6.'}
+        ]},
+      { kind:'choice', title:'Debate Tournament', body:'Your debate team qualified for state.',
+        choices:[
+          {label:'Compete', resume:+10, social:+3, gpa:-0.04, log:'+ Competed in state debate: resume +10, social +3.'},
+          {label:'Skip to focus on school', gpa:+0.05, log:'+ Skipped debate: GPA +0.05.'}
+        ]},
+      { kind:'choice', title:'Volunteer Drive', body:'A volunteering event needs extra help.',
+        choices:[
+          {label:'Join in', resume:+8, social:+4, mental:+3, hours:+3, log:'+ Helped in volunteer drive: resume +8, social +4, mental +3.'},
+          {label:'Sit out', sleep:+2, gpa:+0.02, log:'+ Skipped volunteering: recovered sleep and GPA +0.02.'}
+        ]},
+      { kind:'choice', title:'Student Gov Rally', body:'Student government hosts a big rally.',
+        choices:[
+          {label:'Help organize', resume:+7, social:+5, hours:+2, gpa:-0.03, log:'+ Organized rally: resume +7, social +5.'},
+          {label:'Attend only', social:+2, resume:+2, log:'+ Attended rally: social +2, resume +2.'},
+          {label:'Skip', sleep:+2, log:'+ Skipped rally, rested.'}
+        ]},
+      // Forced academic and misc events
+      { kind:'forced', id:'midterms', title:'Tough Midterms', body:'Two midterms landed the same week.', gpa:-0.12, sleep:-3, mental:-4, log:'- Brutal midterms: GPA hit.' },
+      { kind:'forced', title:'Seasonal Flu', body:'You caught the flu and missed 4 days of school.', gpa:-0.18, sleep:+4, mental:-6, log:'- Sick (flu): GPA -0.18.' },
+      { kind:'forced', title:'Teacher Shout‑Out', body:'A teacher praised your consistency.', gpa:+0.06, resume:+2, mental:+3, log:'+ Teacher praise: GPA +0.06, resume +2.' },
+      { kind:'forced', title:'Won Local Award 🏆', body:'You won a local award for an extracurricular achievement.', gpa:+0.02, resume:+6, mental:+2, log:'+ Won award: Resume +6, GPA +0.02.' },
+      { kind:'forced', title:'Family Stress', body:'Family issues distracted you this semester.', gpa:-0.07, mental:-7, sleep:-2, log:'- Family stress lowered GPA and mental health.' },
+      // Goal-aware invites
+    { kind:'choice', title:'Mentor Offer', body:'A counselor offers {name} a monthly mentor session aligned with your goal.',
+        choices:[
+        {label:'Accept mentorship', resume:+6, gpa:+0.04, hours:+1, mental:+3, log:'+ Took monthly mentorship: resume +6, GPA +0.04.'},
+        {label:'Pass for now', sleep:+1, gpa:+0.01, log:'+ Passed mentorship, kept schedule light.'}
+    ]},
+        // Club-aware bonuses/risks
+        { kind:'choice', title:'Late Practice', body:'Your team schedules extra late practices.',
+            choices:[
+            {label:'Commit fully', sleep:-5, resume:+6, gpa:-0.05, log:'+ Extra practices: resume +6, sleep -5, GPA -0.05.'},
+            {label:'Limit to 1 night', sleep:-2, resume:+3, log:'+ Limited practices: smaller resume boost, less sleep loss.'}
+        ]},
+        { kind:'choice', title:'Feature Article', body:'Yearbook/Journalism wants to feature {name} for consistent involvement.',
+        choices:[
+            {label:'Give interview', resume:+5, social:+3, log:'+ Interviewed for feature: resume +5, social +3.'},
+            {label:'Decline politely', mental:+1, log:'+ Declined to reduce stress: mental +1.'}
+        ]},
+        // “Life happens”
+        { kind:'forced', title:'Group Project Gone Sideways', body:'A teammate ghosted the group.',
+        gpa:-0.06, mental:-3, log:'- Group project stress dented GPA and mental.'},
+        { kind:'forced', title:'Unexpected Family Trip', body:'You had to travel unexpectedly.',
+        gpa:-0.05, sleep:-2, social:+2, log:'- Missed classes, but family time helped social.'}
+
+    ];
+
+    function presentChoice(ev){
+  return new Promise(resolve=>{
+    // Personalize text if you use {name}
+    const title = (ev.title || '').replaceAll('{name}', (PLAYER?.name || 'you'));
+    const body  = (ev.body  || '').replaceAll('{name}', (PLAYER?.name || 'you'));
+
+    document.getElementById('evTitle').textContent = title;
+    document.getElementById('evBody').textContent  = body;
+
+    const box = document.getElementById('evChoices');
+    box.innerHTML = '';
+
+    // Render 1..3 choices as compact buttons
+    (ev.choices || []).forEach((c,i)=>{
+      const b = document.createElement('button');
+      b.className = 'evbtn' + (i === 1 ? ' secondary' : '');
+      b.textContent = c.label;
+      b.onclick = ()=>{ hide('#eventModal'); resolve({...c}); };
+      box.appendChild(b);
+    });
+
+    show('#eventModal');
+  });
+}
+
+// ===== Onboard (robust, idempotent) =====
+function initOnboard(){
+  const modal = document.getElementById('onboard');
+  const nameInput = document.getElementById('obName');
+  const startBtn = document.getElementById('obStart');
+  const resetBtn = document.getElementById('obReset');
+  const chipsWrap = document.getElementById('goalChips');
+  const openProfileBtn = document.getElementById('openProfile');
+
+  if(!modal || !nameInput || !startBtn || !chipsWrap) return; // safe-guard
+
+  // current state → UI
+  nameInput.value = PLAYER.name || '';
+  // mark current goal as active (default to Balance & wellness)
+  const currentGoal = PLAYER.goal || 'Balance & wellness';
+  [...chipsWrap.querySelectorAll('[data-goal]')].forEach(b=>{
+    b.classList.toggle('active', b.dataset.goal === currentGoal);
+  });
+
+  // chip clicks
+  chipsWrap.querySelectorAll('[data-goal]').forEach(b=>{
+    b.onclick = ()=>{
+      chipsWrap.querySelectorAll('[data-goal]').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      PLAYER.goal = b.dataset.goal;
+    };
+  });
+
+  // Start → save + close
+  startBtn.onclick = ()=>{
+    const nm = (nameInput.value || '').trim();
+    PLAYER.name = nm || 'You';
+    if(!PLAYER.goal) PLAYER.goal = 'Balance & wellness';
+    localStorage.setItem('sim_player', JSON.stringify(PLAYER));
+    hide('#onboard');
+    // refresh visible labels that use the player (optional)
+    try { refreshHeader(); } catch(e){}
+  };
+
+  // Guest profile (quick start)
+  resetBtn.onclick = ()=>{
+    PLAYER = { name:'You', goal:'Balance & wellness' };
+    localStorage.setItem('sim_player', JSON.stringify(PLAYER));
+    hide('#onboard');
+    try { refreshHeader(); } catch(e){}
+  };
+
+  // Reopen profile from the small button
+  if(openProfileBtn){
+    openProfileBtn.onclick = ()=>{
+      // preload current values
+      nameInput.value = PLAYER.name || '';
+      const g = PLAYER.goal || 'Balance & wellness';
+      chipsWrap.querySelectorAll('[data-goal]').forEach(x=>x.classList.toggle('active', x.dataset.goal===g));
+      show('#onboard');
+    };
+  }
+
+  // Show automatically when no saved profile
+  if(!PLAYER.name){
+    show('#onboard');
+  }
+}
+
+// Call once after your helpers exist:
+initOnboard();
+
+
+
+function toast(msg,type=''){
+  const root=document.getElementById('toasts');
+  const t=document.createElement('div'); t.className='toast '+type; t.textContent=msg;
+  root.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(-6px)'; }, 1800);
+  setTimeout(()=>{ t.remove(); }, 2300);
+}
+// examples: toast('GPA improved +0.18','good'); toast('Sleep dipped -6','warn');
+
+
+    // ===== STATE =====
+    const initState = () => ({
+      yIndex: 0, semester: 1,
+      core: Object.fromEntries(SUBJECTS.map(s=>[s,'regular'])),
+      electives: new Set(), clubs: new Set(),
+      lastReport: null, history: []
+    });
+    let STATE = load() || initState();
+
+    // ===== DOM HELPERS =====
+    const $ = s=>document.querySelector(s);
+    function show(id){ $(id).classList.remove('hidden'); }
+    function hide(id){ $(id).classList.add('hidden'); }
+    function setSteps(active){ ['#st1','#st2','#st3','#st4','#st5'].forEach((id,i)=>$(id).style.width = i<active? '100%':'0%'); }
+    function yearLabel(){ return `${YEARS[STATE.yIndex]} • ${STATE.semester===1?'Fall Semester':'Spring Semester'}`; }
+
+    // ===== BUILD UI =====
+    function levelsForSubject(sub){
+      if(sub==='PE/Health') return LEVELS.filter(l=>l.id==='regular'); // no honors/AP for PE/Health
+      return LEVELS;
+    }
+
+    function buildCoreGrid(){
+      const wrap = $('#coreGrid'); wrap.innerHTML='';
+      const lock = STATE.semester===2; // Spring lock
+      $('#coreLockMsg').classList.toggle('hidden', !lock);
+      SUBJECTS.forEach(sub=>{
+        const card = document.createElement('div'); card.className='card';
+        const h=document.createElement('div'); h.className='section-title subject'; h.innerHTML=`<span class="ico">${SUBJECT_ICONS[sub]||'📚'}</span> <span>${sub}</span>`; card.appendChild(h);
+        const sel=document.createElement('select'); sel.className='select'; sel.disabled = lock; // lock in spring
+        levelsForSubject(sub).forEach(l=>{ const o=document.createElement('option'); o.value=l.id; o.textContent=`${l.name} (${l.hours}h/wk)`; sel.appendChild(o); });
+        sel.value=STATE.core[sub];
+        sel.onchange=e=>{ STATE.core[sub]=e.target.value; refreshReview(); save(); };
+        card.appendChild(sel);
+        wrap.appendChild(card);
+      });
+    }
+
+    function buildChips(el, list, set){
+      el.innerHTML='';
+      list.forEach(it=>{
+        const b=document.createElement('button');
+        b.className='tag'+(set.has(it.id)?' active':'');
+        b.textContent=`${it.name} • ${it.hours}h`;
+        b.onclick=()=>{ set.has(it.id)?set.delete(it.id):set.add(it.id); refreshReview(); save(); b.classList.toggle('active'); };
+        el.appendChild(b);
+      });
+    }
+
+    // ===== CALCS =====
+    function hoursForLevel(id){ return LEVELS.find(l=>l.id===id).hours; }
+    function gpaDeltaForLevel(id){ return LEVELS.find(l=>l.id===id).gpaDelta; }
+    function honorsCount(){ return SUBJECTS.reduce((n,s)=> n + (STATE.core[s]==='honors' || STATE.core[s]==='ap' ? 1:0), 0); }
+
+    function calcHours(){
+      let h=0; SUBJECTS.forEach(s=>h+=hoursForLevel(STATE.core[s]));
+      STATE.electives.forEach(id=>h+=ELECTIVES.find(e=>e.id===id).hours);
+      STATE.clubs.forEach(id=>h+=CLUBS.find(c=>c.id===id).hours);
+      return h;
+    }
+    function risk(h){ if(h<=32) return 'Low'; if(h<=42) return 'Moderate'; if(h<=50) return 'High'; return 'Severe'; }
+    function burnIndex(label){ return label==='Low'?0: label==='Moderate'?0.7: label==='High'?1.25:1.8; }
+
+    function midtermRiskScore(p){
+      const hc = honorsCount();
+      const b = burnIndex(p.burn);
+      const sleepDef = Math.max(0, 80 - p.sleep); // sleep below 80 increases risk
+      const overload = Math.max(0, p.hours - 40);
+      let score = hc*15 + b*25 + sleepDef*0.8 + overload*1.5; // ~0-100
+      return Math.max(0, Math.min(100, Math.round(score)));
+    }
+
+    function midtermExplainText(p){
+      const hc = honorsCount();
+      const overload = Math.max(0, p.hours - 40);
+      const sleepDef = Math.max(0, 80 - p.sleep);
+      return `Honors/AP: ${hc} • Burnout: ${p.burn} • Sleep deficit: ${sleepDef} • Overload hrs: ${overload}`;
+    }
+
+    function project(){
+        // tougher base
+        let gpa = 3.30, resume=10, mental=78, social=68, sleep=100;
+
+        // core subjects — diminishing GPA returns after 2 advanced courses
+        let advCount = 0;
+        SUBJECTS.forEach(s=>{
+            const lvl = STATE.core[s];
+            if (lvl==='honors'){ gpa += 0.08; advCount++; }
+            else if (lvl==='ap'){ gpa += 0.18; advCount++; }
+        });
+        if (advCount > 2) gpa -= (advCount-2)*0.08*DIFF.gpaDrag; // penalty for overstacking
+
+        // electives/clubs
+        STATE.electives.forEach(id=>{ const e=ELECTIVES.find(x=>x.id===id); resume += e.resume; gpa -= .03*DIFF.gpaDrag; sleep -= 2*DIFF.sleepHit; });
+        STATE.clubs.forEach(id=>{ const c=CLUBS.find(x=>x.id===id); resume += c.resume; if(c.gpaPenalty) gpa -= c.gpaPenalty*DIFF.gpaDrag;
+        sleep -= (c.hours>=5?4:3)*DIFF.sleepHit; social += (c.social||0); mental += (c.mental||0); });
+
+        // total hours → sleep (harsher)
+        const h = calcHours();
+        const overload = Math.max(0, h-38);
+        const sleepPenalty = Math.min(50, overload*1.9*DIFF.sleepHit);
+        sleep = Math.max(0, Math.min(100, sleep - sleepPenalty));
+
+        // sleep feeds back into GPA & mental (stronger)
+        gpa += (sleep-86) * 0.018;
+        mental += (sleep-82) * 0.35;
+
+        // added stress from high load
+        if(h>48){ mental -= 12; } else if(h>41){ mental -= 6; }
+
+        // clamp
+        gpa = Math.max(0, Math.min(4.0, gpa));
+        resume = Math.max(0, Math.min(100, Math.round(resume)));
+        mental = Math.max(0, Math.min(100, Math.round(mental)));
+        social = Math.max(0, Math.min(100, Math.round(social)));
+        sleep = Math.max(0, Math.min(100, Math.round(sleep)));
+
+        const burn = risk(h);
+        const riskScore = Math.max(0, Math.min(100, Math.round(
+            honorsCount()*17 + burnIndex(burn)*28 + Math.max(0,80-sleep)*1.0 + Math.max(0,h-40)*1.8
+        )));
+        const riskExplain = `Honors/AP: ${honorsCount()} • Burnout: ${burn} • Sleep deficit: ${Math.max(0,80-sleep)} • Overload hrs: ${Math.max(0,h-40)}`;
+
+        return { gpa, resume, mental, social, sleep, hours:h, burn, riskScore, riskExplain };
+    }
+
+
+    function refreshHeader(){
+  const label = yearLabel();
+  const pill=document.querySelector('#yearPill'); if(pill) pill.textContent = label;
+
+  const st=document.getElementById('statusTitle');
+  if(st){ st.textContent=label; st.classList.add('status-pulse'); setTimeout(()=>st.classList.remove('status-pulse'),600); }
+
+  // 8-semester progress dots
+  const wrap=document.getElementById('semProgress');
+  if(wrap){
+    wrap.innerHTML='';
+    const idx = STATE.yIndex*2 + (STATE.semester===2?1:0); // current index 0..7
+    for(let i=0;i<8;i++){
+      const dot=document.createElement('div');
+      dot.className = 'sem-dot ' + (i<idx ? 'done' : i===idx ? 'active' : 'future');
+      wrap.appendChild(dot);
+    }
+  }
+}
+
+
+    function setStepTip(step){
+      const tips={
+        0:'Pick cores, then add flavor with electives & clubs.',
+        1:'Choose subject levels wisely — Honors/AP raise risk & reward.',
+        2:'Electives add resume points but cost time & sleep.',
+        3:'Clubs boost resume/social — sports are time-heavy.',
+        4:'Review load, check midterm risk, then simulate!',
+        5:'Read your report, grab badges, tune strategy.'
+      };
+      const el=document.getElementById('statusTip'); if(el) el.textContent = tips[step]||tips[0];
+    }
+    function refreshReview(){
+      const p=project();
+      document.querySelector('#loadSummary').textContent = `${p.hours}h/week • ${p.burn} load`;
+      document.querySelector('#projSummary').textContent = `Projected GPA ${p.gpa.toFixed(2)} • Resume ${p.resume}`;
+      document.querySelector('#healthSummary').textContent = `Sleep ${p.sleep} • Mental ${p.mental} • Social ${p.social}`;
+      // Midterm meter + % and explanation
+      const bar = document.querySelector('#midtermBar'); const lbl = document.querySelector('#midtermLabel'); const ex = document.querySelector('#midtermExplain');
+      bar.style.width = p.riskScore+'%';
+      const bucket = p.riskScore>=75? 'Very High' : p.riskScore>=50? 'High' : p.riskScore>=25? 'Moderate' : 'Low';
+      lbl.textContent = `${bucket} (${p.riskScore}%)`;
+      ex.textContent = p.riskExplain;
+    }
+
+    // ===== EVENTS ENGINE =====
+    function pick(arr,n){ const a=[...arr],o=[]; while(a.length&&o.length<n){ o.push(a.splice(Math.floor(Math.random()*a.length),1)[0]); } return o; }
+    const pause=ms=>new Promise(r=>setTimeout(r,ms));
+
+    function presentChoice(ev){
+  return new Promise(resolve=>{
+    const title = (ev.title || '').replaceAll('{name}', PLAYER.name || 'you');
+    const body  = (ev.body  || '').replaceAll('{name}', PLAYER.name || 'you');
+
+    document.querySelector('#evTitle').textContent = title;
+    document.querySelector('#evBody').textContent  = body;
+
+    const box = document.querySelector('#evChoices');
+    box.innerHTML = '';
+
+    (ev.choices || []).forEach((c,i)=>{
+      const b=document.createElement('button');
+      b.className = 'btn ' + (i===0 ? 'primary' : '');
+      b.textContent = c.label;
+      b.onclick = ()=>{ hide('#eventModal'); resolve({...c}); };
+      box.appendChild(b);
+    });
+
+    const sk = document.getElementById('evSkip');
+    if (sk) sk.onclick = ()=>{ hide('#eventModal'); resolve({label:'Skipped', log:'+ Skipped optional event.'}); };
+
+    show('#eventModal');
+  });
+}
+
+
+
+    function weightedForcedEvents(){
+      // Make Tough Midterms far more likely with more honors and higher burn
+      const baseForced = RANDOM_EVENTS.filter(e=>e.kind==='forced');
+      const mid = baseForced.find(e=>e.id==='midterms');
+      const others = baseForced.filter(e=>e.id!=='midterms');
+      const hc = honorsCount();
+      const b = burnIndex(project().burn);
+      const weight = 1 + Math.min(6, Math.round(hc*1.2 + b*2)); // up to 7 copies
+      const pool = [...others, ...Array(weight).fill(mid)];
+      return pool;
+    }
+
+    async function runSemester(){
+      const loader = document.getElementById('loader');
+      const sim = document.getElementById('simulateBtn');
+      if(sim){ sim.disabled=true; sim.classList.add('opacity-70','cursor-not-allowed'); }
+      loader.style.display='flex';
+      try{
+        const p=project();
+        let gpa=p.gpa,resume=p.resume,mental=p.mental,social=p.social,sleep=p.sleep, hoursAdj=0;
+        const choices = pick(RANDOM_EVENTS.filter(e=>e.kind==='choice'),2);
+        const forced  = pick(weightedForcedEvents(),2);
+        const events = pick([...choices, ...forced],3);
+        const log=[];
+        for(const ev of events){
+          if(ev.kind==='choice'){
+  loader.style.display='none';
+  const res = await presentChoice(ev);
+  loader.style.display='flex';
+
+  // Difficulty scaling for CHOICE event deltas
+  if (res.gpa>0)    res.gpa    *= DIFF.eventPos;  if (res.gpa<0)    res.gpa    *= DIFF.eventNeg;
+  if (res.resume>0) res.resume *= DIFF.eventPos;
+  if (res.mental<0) res.mental *= DIFF.eventNeg;
+  if (res.sleep<0)  res.sleep  *= DIFF.eventNeg;
+
+  gpa      += res.gpa    || 0;
+  resume   += res.resume || 0;
+  mental   += res.mental || 0;
+  social   += res.social || 0;
+  sleep    += res.sleep  || 0;
+  hoursAdj += res.hours  || 0;
+  log.push(res.log);
+} else {
+  if(ev.id==='midterms'){
+    const hc = honorsCount();
+    // tougher midterms + difficulty multiplier
+    const scale = (1 + hc*0.10 + burnIndex(p.burn)*0.50 + Math.max(0,(82 - p.sleep))/100*0.7) * DIFF.midtermMul;
+
+    // build deltas, then scale positives/negatives
+    let d = { gpa:(ev.gpa||0)*scale, resume:(ev.resume||0), mental:(ev.mental||0)*scale, social:(ev.social||0), sleep:(ev.sleep||0)*scale };
+    if (d.gpa>0)    d.gpa    *= DIFF.eventPos;  if (d.gpa<0)    d.gpa    *= DIFF.eventNeg;
+    if (d.resume>0) d.resume *= DIFF.eventPos;
+    if (d.mental<0) d.mental *= DIFF.eventNeg;
+    if (d.sleep<0)  d.sleep  *= DIFF.eventNeg;
+
+    gpa += d.gpa; resume += d.resume; mental += d.mental; social += d.social; sleep += d.sleep;
+    log.push(`${ev.log} (hardness x${scale.toFixed(2)})`);
+  } else {
+    // non-midterm forced events — scale via difficulty
+    let d = { gpa:ev.gpa||0, resume:ev.resume||0, mental:ev.mental||0, social:ev.social||0, sleep:ev.sleep||0 };
+    if (d.gpa>0)    d.gpa    *= DIFF.eventPos;  if (d.gpa<0)    d.gpa    *= DIFF.eventNeg;
+    if (d.resume>0) d.resume *= DIFF.eventPos;
+    if (d.mental<0) d.mental *= DIFF.eventNeg;
+    if (d.sleep<0)  d.sleep  *= DIFF.eventNeg;
+
+    gpa += d.gpa; resume += d.resume; mental += d.mental; social += d.social; sleep += d.sleep;
+    log.push(ev.log);
+  }
+  await pause(250);
+}
+
+        }
+        const totalHours = p.hours + hoursAdj; const burn = risk(totalHours);
+        const drag = burnIndex(burn) * honorsCount() * 0.05;
+        gpa -= drag;
+        if(totalHours>50) gpa-=.18; else if(totalHours>42) gpa-=.08; else if(totalHours<30) gpa+=.02;
+        gpa=Math.max(0,Math.min(4,gpa)); resume=Math.max(0,Math.min(100,Math.round(resume)));
+        mental=Math.max(0,Math.min(100,Math.round(mental))); social=Math.max(0,Math.min(100,Math.round(social))); sleep=Math.max(0,Math.min(100,Math.round(sleep)));
+        const report = { year:YEARS[STATE.yIndex], sem:STATE.semester, gpa:+gpa.toFixed(2), resume, mental, social, sleep, burn, log };
+        STATE.lastReport = report; STATE.history.push(report); save();
+        renderReport();
+      } finally {
+        loader.style.display='none';
+        if(sim){ sim.disabled=false; sim.classList.remove('opacity-70','cursor-not-allowed'); }
+      }
+    }
+
+    function badgeCheck(R){
+        const arr=[];
+        const prev = STATE.history.length>1 ? STATE.history[STATE.history.length-2] : null;
+        const clubs = [...STATE.clubs];
+        const tookAnyElective = STATE.electives && STATE.electives.size > 0;
+
+        // thresholds vary by difficulty
+        const bump = (DIFFICULTY==='Brutal'? +0.10 : DIFFICULTY==='Challenging'? +0.05 : 0);
+
+        if (R.gpa >= 3.85 + bump) arr.push('📘 Academic Ace');
+        if (R.resume >= 60 + (bump*100/0.6|0)) arr.push('⭐ Rising Leader'); // light scale
+        if (R.sleep >= 85 + bump*10) arr.push('😴 Sleep Champion');
+        if (R.burn === 'Low' && R.gpa >= 3.5 + bump) arr.push('🧘 Balance Master');
+        if (R.resume >= 75 + (bump*100/0.6|0) && R.gpa >= 3.6 + bump) arr.push('🏅 Scholar-Leader');
+
+        // early/accessible (unchanged)
+        if (STATE.history.length === 1) arr.push('🎉 First Semester Complete');
+        if (R.gpa >= 3.20 && R.gpa < 3.60) arr.push('🟦 Solid Start');
+        if (R.sleep >= 80 && R.sleep < 85) arr.push('🌙 Well Rested');
+        if (tookAnyElective) arr.push('🎨 Elective Explorer');
+        if (clubs.length >= 1) arr.push('👥 Club Starter');
+        if (clubs.length >= 2) arr.push('💪 Multi-Club Juggler');
+
+        if (R.social >= 85) arr.push('🎉 Social Butterfly');
+        if (R.mental >= 85) arr.push('🧠 Calm & Collected');
+        if (prev && R.gpa - prev.gpa >= 0.30) arr.push('🔄 Comeback Kid');
+        if (R.gpa >= 3.7 + bump && R.burn === 'Low') arr.push('🧱 Iron Focus');
+        if (prev && R.resume - prev.resume >= 8) arr.push('📈 Activity Boost');
+
+        if (clubs.includes('volunteer') && R.resume >= 55) arr.push('💖 Community Heart');
+        if (clubs.includes('sports') && R.resume >= 65) arr.push('🏈 Team Captain');
+        if (clubs.includes('robotics') && R.resume >= 65) arr.push('🤖 Robo Champ');
+        if (clubs.includes('studentgov') && R.resume >= 70) arr.push('🏛️ Civic Leader');
+
+        return arr;
+        }
+
+
+    function suggest(R){
+      const s=[];
+      if(R.gpa<3.3) s.push('Lighten one activity or add a weekly study block.');
+      if(R.resume<40) s.push('Join a club you can commit to long‑term.');
+      if(R.sleep<70) s.push('Target earlier shutdown two nights/week to recover sleep.');
+      if(R.burn==='High' || R.burn==='Severe') s.push('Trim 1 commitment to protect GPA/health.');
+      if(YEARS[STATE.yIndex]==='Junior' && STATE.semester===2) s.push('Add SAT/ACT prep to prime senior fall.');
+      return s.length? s : ['Nice balance — keep going!'];
+    }
+
+  function renderReport(){
+  hide('#step1'); hide('#step2'); hide('#step3'); hide('#step4'); hide('#step5');
+
+  const R = STATE.lastReport;
+  document.querySelector('#repTitle').textContent = `${R.year} • ${R.sem===1?'Fall':'Spring'} — Report`;
+
+  // --- Advisor line (non-duplicating) ---
+  const rep = document.querySelector('#report');
+  const oldAdvisor = rep.querySelector('[data-advisor]');
+  if (oldAdvisor) oldAdvisor.remove();
+
+  const name = (PLAYER?.name || 'You');
+  const goal = (PLAYER?.goal || 'Balance & wellness').toLowerCase();
+  const focus = (R.gpa < 3.4) ? 'lifting grades' : 'adding depth to activities';
+  const sleepNudge = (R.sleep < 80) ? 'and guard two 8-hour nights' : 'while keeping your sleep steady';
+
+  const advisor = document.createElement('p');
+  advisor.setAttribute('data-advisor','');
+  advisor.className = 'muted';
+  advisor.textContent = `Advisor: “${name}, with your goal of ${goal}, focus next term on ${focus} ${sleepNudge}.”`;
+
+  const titleEl = document.getElementById('repTitle');
+  rep.insertBefore(advisor, titleEl.nextSibling);
+
+  // numbers
+  document.querySelector('#rGpa').textContent    = R.gpa.toFixed(2);
+  document.querySelector('#rResume').textContent = R.resume;
+  document.querySelector('#rSleep').textContent  = R.sleep;
+  document.querySelector('#rMental').textContent = R.mental;
+  document.querySelector('#rSocial').textContent = R.social;
+  document.querySelector('#rBurn').textContent   = R.burn;
+  document.querySelector('#sleepNote').textContent = R.sleep>=80
+    ? 'Rested enough to support learning.'
+    : 'Low sleep reduced focus and memory.';
+  // (leave the rest of renderReport as-is)
+
+
+
+      // ===== Notes logic (band + trend) =====
+      const prev = STATE.history.length>1 ? STATE.history[STATE.history.length-2] : null;
+      function band(val, bands){ if(val>=bands.great) return 'Great'; if(val>=bands.ok) return 'Okay'; return 'Bad'; }
+      function trend(val, prevVal, epsilon){ if(prevVal==null) return ''; if(val - prevVal > epsilon) return ' — improving'; if(prevVal - val > epsilon) return ' — slipping'; return ' — stable'; }
+      const gpaBands = {ok:3.0, great:3.6};
+      const gpaNote = band(R.gpa, gpaBands) + trend(R.gpa, prev?prev.gpa:null, 0.1);
+      document.querySelector('#gpaNote').textContent = gpaNote;
+      const resBands = {ok:40, great:75};
+      const resNote = band(R.resume, resBands) + trend(R.resume, prev?prev.resume:null, 3);
+      document.querySelector('#resumeNote').textContent = resNote;
+      const msBands = {ok:60, great:80};
+      document.querySelector('#mentalNote').textContent = band(R.mental, msBands) + trend(R.mental, prev?prev.mental:null, 3);
+      document.querySelector('#socialNote').textContent = band(R.social, msBands) + trend(R.social, prev?prev.social:null, 3);
+
+      const ul=document.querySelector('#eventsLog'); ul.innerHTML=''; R.log.forEach(x=>{ const li=document.createElement('li'); li.textContent=x; ul.appendChild(li); });
+
+      const earned = badgeCheck(R); const bwrap=document.querySelector('#badges'); bwrap.innerHTML='';
+      if(earned.length===0){ const span=document.createElement('span'); span.className='muted'; span.textContent='No badges this time — try a different mix!'; bwrap.appendChild(span); }
+      else { earned.forEach(b=>{ const s=document.createElement('span'); s.className='badge'; s.textContent=b; bwrap.appendChild(s); }); confettiBurst(); }
+
+      const tips=document.querySelector('#tips'); tips.innerHTML=''; suggest(R).forEach(t=>{ const li=document.createElement('li'); li.textContent=t; tips.appendChild(li); });
+
+      show('#report'); setSteps(5); refreshHeader();
+    }
+
+    // ===== NAV & PERSIST =====
+    document.querySelector('#toStep2').onclick=()=>{ hide('#step1'); buildCoreGrid(); show('#step2'); setSteps(1); setStepTip(1); };
+    document.querySelector('#back1').onclick=()=>{ hide('#step2'); show('#step1'); setSteps(0); };
+
+    document.querySelector('#toStep3').onclick=()=>{ hide('#step2'); buildChips(document.querySelector('#electivesList'), ELECTIVES, STATE.electives); show('#step3'); setSteps(2); setStepTip(2); };
+    document.querySelector('#back2').onclick=()=>{ if(STATE.semester===2){ hide('#step3'); show('#step1'); setSteps(0); } else { hide('#step3'); show('#step2'); setSteps(1); } };
+
+    document.querySelector('#toStep4').onclick=()=>{ hide('#step3'); buildChips(document.querySelector('#clubsList'), CLUBS, STATE.clubs); show('#step4'); setSteps(3); setStepTip(3); };
+    document.querySelector('#back3').onclick=()=>{ hide('#step4'); show('#step3'); setSteps(2); };
+
+    document.querySelector('#toStep5').onclick=()=>{ hide('#step4'); refreshReview(); show('#step5'); setSteps(4); setStepTip(4); };
+    document.querySelector('#back4').onclick=()=>{ hide('#step5'); show('#step4'); setSteps(3); };
+
+    document.getElementById('simulateBtn').onclick=()=>{ setStepTip(4); runSemester(); };
+
+    document.querySelector('#tweakBtn').onclick=()=>{ hide('#report'); show('#step3'); setSteps(2); setStepTip(2); };
+    document.querySelector('#nextSemBtn').onclick=()=>advanceSemester();
+
+    function advanceSemester(){
+      if(STATE.semester===1){ STATE.semester=2; }
+      else { STATE.semester=1; STATE.yIndex++; }
+      if(STATE.yIndex>=YEARS.length){ return showGrad(); }
+      refreshHeader(); hide('#report');
+      if(STATE.semester===2){ buildCoreGrid(); show('#step3'); setSteps(2); setStepTip(2); }
+      else { buildCoreGrid(); show('#step2'); setSteps(1); setStepTip(1); }
+      save();
+    }
+
+    function showGrad(){
+      hide('#report');
+      const count = STATE.history.length || 1;
+      const gpaAvg = STATE.history.reduce((a,b)=>a + (b.gpa||0), 0) / count;
+      const resumeMax = STATE.history.length ? Math.max(...STATE.history.map(h=>h.resume||0)) : 0;
+      const sleepAvg = Math.round(STATE.history.reduce((a,b)=>a + (b.sleep||0), 0) / count);
+      const summary = [`Final GPA (avg): ${gpaAvg.toFixed(2)}`, `Best resume: ${resumeMax}`, `Avg sleep: ${sleepAvg}`].join(' • ');
+      document.querySelector('#gradSummary').textContent = summary;
+      const fb=document.querySelector('#finalBadges'); fb.innerHTML='';
+      const all = new Set(); STATE.history.forEach(r=> badgeCheck(r).forEach(b=> all.add(b)) );
+      if(all.size===0){ const span=document.createElement('span'); span.className='muted'; span.textContent='No badges… try a different path next run!'; fb.appendChild(span); }
+      else { [...all].forEach(b=>{ const s=document.createElement('span'); s.className='badge'; s.textContent=b; fb.appendChild(s); }); }
+      show('#grad');
+
+    }
+
+    // Persist
+    function save(){ try{ const x={...STATE, electives:[...STATE.electives], clubs:[...STATE.clubs]}; localStorage.setItem('scheduleSimCore', JSON.stringify(x)); }catch(e){} }
+    function load(){ try{ const raw=localStorage.getItem('scheduleSimCore'); if(!raw) return null; const x=JSON.parse(raw); x.electives=new Set(x.electives||[]); x.clubs=new Set(x.clubs||[]); return x; }catch(e){ return null; } }
+
+    // Reset
+    document.getElementById('restartBtn').onclick=()=>{
+      try{ localStorage.removeItem('scheduleSimCore'); }catch(e){}
+      STATE = initState();
+      hide('#grad'); hide('#report'); hide('#step2'); hide('#step3'); hide('#step4'); hide('#step5');
+      show('#step1'); setSteps(0); refreshHeader();
+    };
+
+    // Confetti
+    function confettiBurst(){
+      const root = document.getElementById('confetti'); if(!root) return;
+      root.innerHTML='';
+      const colors=['#f43f5e','#f59e0b','#10b981','#3b82f6','#a78bfa','#22c55e','#eab308'];
+      const N=80; const vw=window.innerWidth;
+      for(let i=0;i<N;i++){
+        const p=document.createElement('i');
+        p.style.left = Math.random()*vw + 'px';
+        p.style.top = '-10px';
+        p.style.background = colors[Math.floor(Math.random()*colors.length)];
+        p.style.transform = `translateY(0) rotate(${Math.random()*360}deg)`;
+        p.style.animationDelay = (Math.random()*0.5)+'s';
+        p.style.animationDuration = (1.4 + Math.random()*1.2)+'s';
+        root.appendChild(p);
+      }
+      setTimeout(()=>{ root.innerHTML=''; }, 2200);
+    }
+
+    // init
+    refreshHeader(); setSteps(0); setStepTip(0);
+
+function updateActionBar(mode){
+  // mode can be: intro, cores, electives, clubs, review, report, grad
+  document.getElementById('abPill').textContent = yearLabel();
+  document.getElementById('abTip').textContent = ({
+    intro:'Welcome aboard!',
+    cores:'Choose core levels',
+    electives:'Pick electives (0–3)',
+    clubs:'Add clubs/sports',
+    review:'Review & simulate',
+    report:'Check results & tweak',
+    grad:'Congrats!'
+  })[mode] || 'Onward';
+
+  const abPrimary = document.getElementById('abPrimary');
+  const abBack    = document.getElementById('abBack');
+
+  // wire the right actions without stacking listeners
+  const cloneP = abPrimary.cloneNode(true), cloneB = abBack.cloneNode(true);
+  abPrimary.parentNode.replaceChild(cloneP, abPrimary);
+  abBack.parentNode.replaceChild(cloneB, abBack);
+
+  if(mode==='intro'){ cloneB.onclick=()=>{}; cloneB.disabled=true; cloneP.onclick=()=>$('#toStep2').click(); cloneP.textContent='Start ▶'; }
+  if(mode==='cores'){ cloneB.onclick=()=>$('#back1').click(); cloneP.onclick=()=>$('#toStep3').click(); cloneP.textContent='Next: Electives ▶'; }
+  if(mode==='electives'){ cloneB.onclick=()=>$('#back2').click(); cloneP.onclick=()=>$('#toStep4').click(); cloneP.textContent='Next: Clubs ▶'; }
+  if(mode==='clubs'){ cloneB.onclick=()=>$('#back3').click(); cloneP.onclick=()=>$('#toStep5').click(); cloneP.textContent='Review ▶'; }
+  if(mode==='review'){ cloneB.onclick=()=>$('#back4').click(); cloneP.onclick=()=>$('#simulateBtn').click(); cloneP.textContent='Simulate Semester ▶'; }
+  if(mode==='report'){ cloneB.onclick=()=>$('#tweakBtn').click(); cloneP.onclick=()=>$('#nextSemBtn').click(); cloneP.textContent='Next Semester ▶'; }
+  if(mode==='grad'){ cloneB.onclick=()=>{}; cloneB.disabled=true; cloneP.onclick=()=>$('#restartBtn').click(); cloneP.textContent='Play Again'; }
+}
+
+  </script>
+
+  </div>
+</div>
+
+<div id="toasts" class="fixed top-3 right-3 z-[80] space-y-2 pointer-events-none"></div>
+</body>
+</html>
+
