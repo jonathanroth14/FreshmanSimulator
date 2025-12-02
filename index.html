@@ -493,7 +493,9 @@ var RANDOM_EVENTS = [
   {kind:'forced', title:'📝 Pop Quiz Week', body:'Three surprise quizzes this week!', gpa:-0.08, mental:-4, xp:10, log:'Pop quiz week', display:'Pop quiz week (-0.08 GPA, -4 Mental)'},
   {kind:'forced', title:'😊 New Friend!', body:'You made a great new friend.', social:8, mental:3, xp:15, log:'Made new friend', display:'Made new friend (+8 Social, +3 Mental)'},
   {kind:'forced', title:'🤧 Caught a Cold', body:'You got sick and missed 2 days.', gpa:-0.10, sleep:4, xp:5, log:'Got sick', display:'Got sick (-0.10 GPA, +4 Sleep)'},
-  {kind:'forced', title:'🌟 Teacher Praise', body:'Your teacher praised your work!', gpa:0.05, mental:4, resume:2, xp:20, log:'Teacher praise', display:'Teacher praise (+0.05 GPA, +4 Mental, +2 Resume)'}
+  {kind:'forced', title:'🌟 Teacher Praise', body:'Your teacher praised your work!', gpa:0.05, mental:4, resume:2, xp:20, log:'Teacher praise', display:'Teacher praise (+0.05 GPA, +4 Mental, +2 Resume)'},
+  {kind:'forced', title:'✨ Perfect Attendance Week', body:'You had perfect attendance and focus this week!', gpa:0.06, mental:3, xp:15, log:'Perfect week', display:'Perfect attendance week (+0.06 GPA, +3 Mental)'},
+  {kind:'forced', title:'💡 Breakthrough Moment', body:'A concept finally clicked - everything makes sense now!', gpa:0.08, mental:5, xp:20, log:'Breakthrough moment', display:'Breakthrough moment (+0.08 GPA, +5 Mental)'}
 ];
 
 function initState() {
@@ -697,7 +699,8 @@ function risk(h) {
 }
 
 function project() {
-  var gpa = 3.30;
+  // Base stats - slightly higher base GPA to make 4.0 achievable with perfect play
+  var gpa = 3.35;
   var resume = 10;
   var mental = 80;
   var social = 70;
@@ -716,12 +719,14 @@ function project() {
       advCount++;
     }
   });
-  if (advCount > 2) gpa -= (advCount - 2) * 0.10;
+  // Reduced overstacking penalty to make 4.0 more achievable (was 0.10)
+  if (advCount > 2) gpa -= (advCount - 2) * 0.07;
 
   STATE.electives.forEach(function(id){
     var e = ELECTIVES.find(function(x){ return x.id === id; });
     resume += e.resume;
-    gpa -= 0.04;
+    // Reduced elective GPA cost to make 4.0 more achievable (was 0.04)
+    gpa -= 0.03;
     sleep -= 3;
   });
 
@@ -747,6 +752,9 @@ function project() {
 
   if (h > 45) social -= 10;
   else if (h > 40) social -= 5;
+
+  // Small GPA bonus for balanced schedules (low hours)
+  if (h < 30) gpa += 0.04;
 
   gpa = Math.max(0, Math.min(4.0, gpa));
   resume = Math.max(0, Math.min(100, Math.round(resume)));
