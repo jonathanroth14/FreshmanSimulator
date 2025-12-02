@@ -1,0 +1,22 @@
+{
+  "name": "freshman-simulator",
+  "version": "1.0.0",
+  "description": "High School Journey Simulator - A step-by-step schedule builder for students",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "education",
+    "simulator",
+    "high-school"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
