@@ -701,6 +701,8 @@ function savePlayer(){ localStorage.setItem('sim_player', JSON.stringify(PLAYER)
       { kind:'forced', title:'Seasonal Flu', body:'You caught the flu and missed 4 days of school.', gpa:-0.18, sleep:+4, mental:-6, log:'- Sick (flu): GPA -0.18.' },
       { kind:'forced', title:'Teacher Shout‑Out', body:'A teacher praised your consistency.', gpa:+0.06, resume:+2, mental:+3, log:'+ Teacher praise: GPA +0.06, resume +2.' },
       { kind:'forced', title:'Won Local Award 🏆', body:'You won a local award for an extracurricular achievement.', gpa:+0.02, resume:+6, mental:+2, log:'+ Won award: Resume +6, GPA +0.02.' },
+      { kind:'forced', title:'Perfect Attendance Week', body:'You had perfect attendance and focus this week.', gpa:+0.05, mental:+2, log:'+ Perfect week: GPA +0.05, mental +2.' },
+      { kind:'forced', title:'Breakthrough Moment 💡', body:'A concept finally clicked — everything makes sense now!', gpa:+0.08, mental:+4, log:'+ Breakthrough moment: GPA +0.08, mental boost!' },
       { kind:'forced', title:'Family Stress', body:'Family issues distracted you this semester.', gpa:-0.07, mental:-7, sleep:-2, log:'- Family stress lowered GPA and mental health.' },
       // Goal-aware invites
     { kind:'choice', title:'Mentor Offer', body:'A counselor offers {name} a monthly mentor session aligned with your goal.',
@@ -906,8 +908,8 @@ function toast(msg,type=''){
     }
 
     function project(){
-        // tougher base
-        let gpa = 3.30, resume=10, mental=78, social=68, sleep=100;
+        // Base stats - slightly higher base GPA to make 4.0 achievable with perfect play
+        let gpa = 3.35, resume=10, mental=78, social=68, sleep=100;
 
         // core subjects — diminishing GPA returns after 2 advanced courses
         let advCount = 0;
@@ -916,7 +918,7 @@ function toast(msg,type=''){
             if (lvl==='honors'){ gpa += 0.08; advCount++; }
             else if (lvl==='ap'){ gpa += 0.18; advCount++; }
         });
-        if (advCount > 2) gpa -= (advCount-2)*0.08*DIFF.gpaDrag; // penalty for overstacking
+        if (advCount > 2) gpa -= (advCount-2)*0.06*DIFF.gpaDrag; // penalty for overstacking (reduced from 0.08)
 
         // electives/clubs
         STATE.electives.forEach(id=>{ const e=ELECTIVES.find(x=>x.id===id); resume += e.resume; gpa -= .03*DIFF.gpaDrag; sleep -= 2*DIFF.sleepHit; });
@@ -1104,9 +1106,9 @@ function toast(msg,type=''){
 
         }
         const totalHours = p.hours + hoursAdj; const burn = risk(totalHours);
-        const drag = burnIndex(burn) * honorsCount() * 0.05;
+        const drag = burnIndex(burn) * honorsCount() * 0.03; // reduced from 0.05 to make 4.0 more achievable
         gpa -= drag;
-        if(totalHours>50) gpa-=.18; else if(totalHours>42) gpa-=.08; else if(totalHours<30) gpa+=.02;
+        if(totalHours>50) gpa-=.18; else if(totalHours>42) gpa-=.08; else if(totalHours<30) gpa+=.04; // increased bonus from 0.02
         gpa=Math.max(0,Math.min(4,gpa)); resume=Math.max(0,Math.min(100,Math.round(resume)));
         mental=Math.max(0,Math.min(100,Math.round(mental))); social=Math.max(0,Math.min(100,Math.round(social))); sleep=Math.max(0,Math.min(100,Math.round(sleep)));
         const report = { year:YEARS[STATE.yIndex], sem:STATE.semester, gpa:+gpa.toFixed(2), resume, mental, social, sleep, burn, log };
